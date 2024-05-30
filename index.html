@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Circle with DecrementNumber Animation</title>
+    <style>
+        .circle {
+            stroke-dasharray: 251.2;
+            /* 2πr where r is the radius (40) */
+            stroke-dashoffset: 251.2;
+            transform-origin: 50% 50%;
+            transform: rotate(-90deg);
+            /* Start the animation from the top (0 degrees) */
+        }
+
+        .animate {
+            stroke-width: 8;
+            stroke: black;
+            fill: none;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 0.9s;
+            /* Set the drawing animation duration to 0.9s */
+        }
+
+        .reset {
+            /* Resetting color to white */
+            stroke: white;
+            stroke-dashoffset: 251.2;
+            transition: stroke-dashoffset 0;
+            /* Set the reset animation duration to 0s */
+        }
+
+        text {
+            font-size: 48px;
+            text-anchor: middle;
+            /*dominant-baseline: middle; // 非対応 */
+        }
+    </style>
+</head>
+
+<body>
+    <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+        <circle id="circle" class="circle" cx="50" cy="50" r="40" />
+        <text x="50" y="68" id="number"></text>
+    </svg>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const circle = document.getElementById('circle');
+            const number = document.getElementById('number');
+            // 要素が存在するか確認
+            if (!circle || !number) {
+                console.error('One or more elements are not found');
+                return;
+            }
+
+            let currentNumber = 10;
+            number.textContent = currentNumber;
+
+            function animateCircle() {
+                // 一旦アニメーションをリセット
+                circle.classList.remove('animate');
+                circle.classList.add('reset');
+
+                setTimeout(function () {
+                    circle.classList.remove('reset');
+                    void circle.offsetWidth; // Reflowをトリガー
+
+                    setTimeout(function () {
+                        circle.classList.add('animate');
+                    }, 50); // 50ミリ秒の待ち時間
+                }, 50); // 100ミリ秒の待ち時間
+            }
+
+            // 1000ミリ秒ごとにカウントダウン
+            function startCountdown() {
+                animateCircle();
+                const countdownInterval = setInterval(() => {
+                    currentNumber--;
+                    number.textContent = currentNumber;
+                    if (currentNumber > 0) {
+                        animateCircle();
+                    } else {
+                        clearInterval(countdownInterval);
+                    }
+                }, 1000);
+            }
+
+            // ページ表示時にカウントダウンを開始
+            startCountdown();
+        });
+    </script>
+</body>
+
+</html>
