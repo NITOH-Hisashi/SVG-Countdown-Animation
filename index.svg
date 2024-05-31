@@ -1,0 +1,89 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .circle {
+            stroke-dasharray: 251.2;
+            /* 2πr where r is the radius (40) */
+            stroke-dashoffset: 251.2;
+            transform-origin: 50% 50%;
+            transform: rotate(-90deg);
+            /* Start the animation from the top (0 degrees) */
+            /* transition: stroke-dashoffset 1s, stroke 0.1s; */
+        }
+
+        .animate {
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 0.99s;
+            /* Set the drawing animation duration to 1s */
+        }
+
+        .reset {
+            stroke: white;
+            /* Resetting color to white */
+            stroke-dashoffset: 251.2;
+            transition: stroke-dashoffset 0.01s;
+            /* Set the reset animation duration to 0.1s */
+        }
+
+        text {
+            font-size: 48px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+    </style>
+    <circle id="circle" cx="50" cy="50" r="40" stroke="black" stroke-width="8" fill="none" class="circle" />
+    <text x="50" y="54" id="number"></text>
+
+    <script type="application/ecmascript">
+        <![CDATA[
+        document.addEventListener('DOMContentLoaded', function() {
+                const circle = document.getElementById('circle');
+                const numberText = document.getElementById('number');
+
+                // 要素が存在するか確認
+                if (!circle || !numberText) {
+                    console.error('One or more elements are not found');
+                    return;
+                }
+
+                let currentNumber = 10;
+                numberText.textContent = currentNumber;
+
+                function decrementNumber() {
+                    // 一旦アニメーションをリセット
+                    circle.classList.remove('animate');
+                    circle.classList.add('reset');
+
+                    currentNumber--;
+                    numberText.textContent = currentNumber;
+                    if (currentNumber > 0) {
+                        animateCircle();
+                    }
+                }
+
+                function animateCircle() {
+                    setTimeout(function() {
+                        circle.classList.remove('reset');
+                        void circle.offsetWidth; // Reflowをトリガー
+
+                        setTimeout(function() {
+                            circle.classList.add('animate');
+                        }, 5); // 50ミリ秒の待ち時間
+                    }, 5); // 100ミリ秒の待ち時間
+                }
+
+                function startCountdown() {
+                    animateCircle();
+                    const countdownInterval = setInterval(() => {
+                        decrementNumber();
+                        if (currentNumber <= 0) {
+                        clearInterval(countdownInterval);
+                        }
+                    }, 990); // 1秒ごとにカウントダウン
+                }
+
+                // ページ表示時にカウントダウンを開始
+                startCountdown();
+            });
+        ]]>
+    </script>
+</svg>
