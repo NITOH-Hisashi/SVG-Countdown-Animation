@@ -50,8 +50,8 @@
                         clearInterval(countdownInterval);
                     }
                     countdownInterval = setInterval(() => {
+                        currentNumber.value--;
                         if (currentNumber.value > 0) {
-                            currentNumber.value--;
                             animateCircle();
                         } else {
                             clearInterval(countdownInterval);
