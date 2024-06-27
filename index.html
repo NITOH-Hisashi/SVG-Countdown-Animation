@@ -9,21 +9,82 @@
 </head>
 
 <body>
+    <div id="app"></div>
 
-    <div id="controls">
-        <input type="number" id="countdown-seconds" placeholder="秒数を入力" min="1" value="180">
-        <button id="start-button">カウントダウン開始</button>
-    </div>
+    <template id="app-template">
+        <div id="controls">
+            <input type="number" v-model="countdownSeconds" placeholder="秒数を入力" min="1"
+                @keypress.enter="startCountdown" />
+            <button @click="startCountdown">Start</button>
+        </div>
 
-    <div class="svg-container">
-        <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <circle id="circle" cx="100" cy="100" r="80" stroke="black" stroke-width="8" fill="none" class="circle" />
-            <text x="100" y="116" id="number"></text>
-        </svg>
-    </div>
+        <div class="svg-container">
+            <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <circle ref="circle" cx="100" cy="100" r="82" stroke="black" stroke-width="8" fill="none"
+                    :class="circleClass" />
+                <text x="100" y="116">{{ currentNumber }}</text>
+            </svg>
+        </div>
+    </template>
 
-    <script src="index.js"></script>
+    <script type="module">
+        import { createApp, ref, watch } from 'https://unpkg.com/vue@3.4/dist/vue.esm-browser.prod.js';
 
+        createApp({
+            template: '#app-template',
+            setup() {
+                const countdownSeconds = ref(180);
+                const currentNumber = ref(180);
+                const circleClass = ref('circle');
+                const circle = ref(null);
+                let countdownInterval;
+
+                const startCountdown = () => {
+                    if (isNaN(countdownSeconds.value) || countdownSeconds.value <= 0) {
+                        alert('有効な秒数を入力してください');
+                        return;
+                    }
+                    currentNumber.value = countdownSeconds.value;
+                    animateCircle();
+                    if (countdownInterval) {
+                        clearInterval(countdownInterval);
+                    }
+                    countdownInterval = setInterval(() => {
+                        if (currentNumber.value > 0) {
+                            currentNumber.value--;
+                            animateCircle();
+                        } else {
+                            clearInterval(countdownInterval);
+                        }
+                    }, 1000); // 1000ミリ秒ごとにカウントダウン
+                };
+
+                const animateCircle = () => {
+                    circleClass.value = 'circle reset';
+                    //console.log({ circleClass });
+                    void circle.value.offsetWidth; // Reflowをトリガー
+                    setTimeout(() => {
+                        circleClass.value = 'circle animate';
+                        //console.log({ circleClass });
+                    }, 50); // 50ミリ秒ごとにカウントダウン
+                };
+
+                watch(currentNumber, (newValue) => {
+                    if (newValue <= 0 && countdownInterval) {
+                        clearInterval(countdownInterval);
+                    }
+                });
+
+                return {
+                    countdownSeconds,
+                    currentNumber,
+                    circleClass,
+                    circle,
+                    startCountdown,
+                };
+            }
+        }).mount('#app');
+    </script>
 </body>
 
 </html>
