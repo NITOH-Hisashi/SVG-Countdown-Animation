@@ -7,7 +7,7 @@ createApp({
         const currentNumber = ref(180);
         const circleClass = ref('circle');
         const circle = ref(null);
-        let countdownInterval;
+        let countdownInterval = null;
 
         const startCountdown = () => {
             if (isNaN(countdownSeconds.value) || countdownSeconds.value <= 0) {
@@ -18,6 +18,7 @@ createApp({
             animateCircle();
             if (countdownInterval) {
                 clearInterval(countdownInterval);
+                countdownInterval = null;
             }
             countdownInterval = setInterval(() => {
                 currentNumber.value--;
@@ -25,6 +26,7 @@ createApp({
                     animateCircle();
                 } else {
                     clearInterval(countdownInterval);
+                    return null;
                 }
             }, 1000); // 1000ミリ秒ごとに数値カウントダウン
         };
@@ -42,6 +44,7 @@ createApp({
         watch(currentNumber, (newValue) => {
             if (newValue <= 0 && countdownInterval) {
                 clearInterval(countdownInterval);
+                countdownInterval = null;
             }
         });
 
