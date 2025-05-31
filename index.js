@@ -1,4 +1,4 @@
-const { createApp } = Vue;
+const { createApp, watch } = Vue;
 
 createApp({
     template: '#app-template',
