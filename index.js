@@ -1,4 +1,4 @@
-const { createApp, ref, watch, onMounted } = Vue;
+const { createApp } = Vue;
 
 createApp({
     template: '#app-template',
