@@ -1,4 +1,4 @@
-const { createApp, watch } = Vue;
+const { createApp, watch, ref } = Vue;
 
 let countdownInterval = null;
 
